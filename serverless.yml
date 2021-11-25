@@ -6,14 +6,24 @@ frameworkVersion: '2'
 
 plugins:
   - serverless-plugin-typescript
+  - serverless-domain-manager
 
+custom:
+  customDomain:
+    domainName: rhdapi.click
+    basePath: ${self:provider.stage}
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+    autoDomain: true
+    endpointType: regional
+    apiType: http
 
 provider:
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: '20201221'
 
-  stage: dev
+  stage: ${opt:stage, 'dev'}
   region: us-east-1
 
   environment:
@@ -21,9 +31,16 @@ provider:
     AIRTABLE_BASE_ID: ${param:AIRTABLE_BASE_ID}
 
 functions:
-  hello:
-    handler: handler.hello
+  full-projects:
+    handler: functions/full-projects.main
     events:
       - httpApi:
-          path: /
+          path: /full-projects
+          method: get
+
+  index-projects:
+    handler: functions/index-projects.main
+    events:
+      - httpApi:
+          path: /index-projects
           method: get
