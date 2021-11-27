@@ -26,21 +26,24 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: us-east-1
 
+  httpApi:
+    cors: true
+
   environment:
     AIRTABLE_API_KEY: ${param:AIRTABLE_API_KEY}
     AIRTABLE_BASE_ID: ${param:AIRTABLE_BASE_ID}
 
 functions:
   full-projects:
-    handler: functions/full-projects.main
+    handler: functions/projects/all.main
     events:
       - httpApi:
-          path: /full-projects
+          path: /projects/all
           method: get
 
-  index-projects:
-    handler: functions/index-projects.main
+  featured-projects:
+    handler: functions/projects/featured.main
     events:
       - httpApi:
-          path: /index-projects
+          path: /projects/featured
           method: get
